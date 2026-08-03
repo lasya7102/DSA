@@ -27,6 +27,7 @@ int MOD = 1000000007;
         while(!pq.isEmpty())
         {
             long arr[]=pq.poll();// arr[0] is edge and arr[1]  is distance
+            if (arr[1] > dist[(int) arr[0]]) continue;
             for(int ch[]:list.get((int) arr[0]))
             {
                
