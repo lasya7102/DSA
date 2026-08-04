@@ -1,72 +1,51 @@
-class Pair
-{
- int edge,dis;
- Pair(int edge,int dis)
- {
-    this.edge=edge;
-    this.dis=dis;
- }
-}
 class Solution {
-   int result = 0;
-int reach = Integer.MAX_VALUE;
-     void dijsktras(ArrayList<ArrayList<Pair>> list,int src,int k)
-    {
-      int dist[]=new int[list.size()];
-      for(int i=0;i<dist.length;i++)
-      {
-        dist[i]=Integer.MAX_VALUE;
-      }
-      dist[src]=0;
-      PriorityQueue<Pair> pq=new PriorityQueue<>((x,y)->x.dis-y.dis);
-      pq.offer(new Pair(src,0));
-      while(!pq.isEmpty())
-      {
-       Pair p=pq.poll();
-      
-
-if (p.dis > dist[p.edge])
-    continue;
-        for(Pair e:list.get(p.edge))
-        {
-            if(e.dis+p.dis<dist[e.edge])
-            {
-                dist[e.edge]=e.dis+p.dis;
-                pq.offer(new Pair(e.edge,dist[e.edge]));
-            }
-        }
-      }
-      int count=0;
-     for (int i = 0; i < dist.length; i++) {
-    if (i != src && dist[i] <= k)
-        count++;
-
-}
-     if(count<=reach) 
-     {
-        reach=count;
-        result=src;
-     }
-    }
     public int findTheCity(int n, int[][] edges, int distanceThreshold) {
-        ArrayList<ArrayList<Pair>> list=new ArrayList<>();
-        for(int i=0;i<n;i++)
-        {
-            list.add(new ArrayList<>());
-        }
+        int dist[][]=new int[n][n];
+        int INF = 100000000;
+
+for (int i = 0; i < n; i++) {
+    Arrays.fill(dist[i], INF);
+    dist[i][i] = 0;
+}
         for(int i=0;i<edges.length;i++)
         {
             int u=edges[i][0];
             int v=edges[i][1];
-            int w=edges[i][2];
-            list.get(u).add(new Pair(v,w));
-            list.get(v).add(new Pair(u,w));
+            int dis=edges[i][2];
+            dist[u][v]=dis;
+            dist[v][u]=dis;
         }
-        int reach=n;
+
         for(int i=0;i<n;i++)
         {
-            dijsktras(list,i,distanceThreshold);
+            for(int j=0;j<n;j++)
+            {
+                for(int k=0;k<n;k++)
+                {
+                    if(dist[j][i]!=INF && dist[i][k]!=INF && dist[j][i]+dist[i][k]<dist[j][k])
+                    {
+                        dist[j][k]=dist[j][i]+dist[i][k];
+                    }
+                }
+            }
         }
-       return result;
+       
+        int min=Integer.MAX_VALUE;
+        int ans=n;
+        for(int i=0;i<n;i++)
+        {
+            int count=0;
+            for(int j=0;j<n;j++)
+            {
+                if(i!=j && dist[i][j]<=distanceThreshold) count++;
+            }
+           if(count<=min)
+           {
+            min=count;
+            ans=i;
+           }
+        }
+      
+        return ans;
     }
 }
