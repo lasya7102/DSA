@@ -8,8 +8,8 @@ class Pair
  }
 }
 class Solution {
-    int min=Integer.MAX_VALUE;
-    ArrayList<Integer> ans=new ArrayList<>();
+   int result = 0;
+int reach = Integer.MAX_VALUE;
      void dijsktras(ArrayList<ArrayList<Pair>> list,int src,int k)
     {
       int dist[]=new int[list.size()];
@@ -23,6 +23,10 @@ class Solution {
       while(!pq.isEmpty())
       {
        Pair p=pq.poll();
+      
+
+if (p.dis > dist[p.edge])
+    continue;
         for(Pair e:list.get(p.edge))
         {
             if(e.dis+p.dis<dist[e.edge])
@@ -36,9 +40,13 @@ class Solution {
      for (int i = 0; i < dist.length; i++) {
     if (i != src && dist[i] <= k)
         count++;
+
 }
-      min=Math.min(min,count);
-      ans.add(count);
+     if(count<=reach) 
+     {
+        reach=count;
+        result=src;
+     }
     }
     public int findTheCity(int n, int[][] edges, int distanceThreshold) {
         ArrayList<ArrayList<Pair>> list=new ArrayList<>();
@@ -54,17 +62,11 @@ class Solution {
             list.get(u).add(new Pair(v,w));
             list.get(v).add(new Pair(u,w));
         }
+        int reach=n;
         for(int i=0;i<n;i++)
         {
             dijsktras(list,i,distanceThreshold);
         }
-        for(int i=n-1;i>=0;i--)
-        {
-            if(ans.get(i)==min)
-            {
-                return i;
-            }
-        }
-        return 0;
+       return result;
     }
 }
