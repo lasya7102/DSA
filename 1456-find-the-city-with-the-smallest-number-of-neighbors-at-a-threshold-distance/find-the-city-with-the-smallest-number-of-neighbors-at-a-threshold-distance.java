@@ -33,13 +33,10 @@ class Solution {
         }
       }
       int count=0;
-      for(int ch:dist)
-      {
-        if(ch<=k) 
-        {
-            count++;
-        }
-      }
+     for (int i = 0; i < dist.length; i++) {
+    if (i != src && dist[i] <= k)
+        count++;
+}
       min=Math.min(min,count);
       ans.add(count);
     }
