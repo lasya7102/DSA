@@ -1,7 +1,7 @@
 class Solution {
     public int findTheCity(int n, int[][] edges, int distanceThreshold) {
         int dist[][]=new int[n][n];
-        int INF = 100000000;
+        int INF = 10001;
 
 for (int i = 0; i < n; i++) {
     Arrays.fill(dist[i], INF);
@@ -22,7 +22,7 @@ for (int i = 0; i < n; i++) {
             {
                 for(int k=0;k<n;k++)
                 {
-                    if(dist[j][i]!=INF && dist[i][k]!=INF && dist[j][i]+dist[i][k]<dist[j][k])
+                    if(dist[j][i]+dist[i][k]<dist[j][k])
                     {
                         dist[j][k]=dist[j][i]+dist[i][k];
                     }
