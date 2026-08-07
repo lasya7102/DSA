@@ -1,54 +1,113 @@
-class Solution {
-    public int makeConnected(int n, int[][] connections) {
-        ArrayList<ArrayList<Integer>> list=new ArrayList<>();
-         int count=0;
-        int edges=0;
-        if(connections.length<n-1) return -1;
+class DisjointSet {
+     int n;
+      int[] rank;
+      int[] parent;
+       int[] size;
+      
+             
+    public DisjointSet(int n) {
+        this.n=n;
+         rank=new int[n];
+          parent=new int[n];
+          size=new int[n];
         for(int i=0;i<n;i++)
         {
-            list.add(new ArrayList<>());
+            rank[i]=0;
+            size[i]=1;
+            parent[i]=i;
+          
+
         }
+    }
+
+   public int findParent(int x)
+   {
+    if(parent[x]==x)
+    {
+        return x;
+    }
+     parent[x]=findParent(parent[x]);
+     return parent[x];
+   }
+    public boolean find(int u, int v) {
+       if(findParent(u)==findParent(v))
+       {
+        return true;
+       }
+       return false;
+    }
+
+    public void unionByRank(int u, int v) {
+       int p1=findParent(u);
+       int p2=findParent(v);
+       if(p1==p2) return;
+       if(rank[p1]<rank[p2])
+       {
+         parent[p1]=p2;
+       }
+       else if(rank[p1] > rank[p2])
+       {
+        parent[p2]=p1;
+       }
+       else{
+         parent[p1]=p2;
+         rank[p2]++;
+       }
+    }
+
+    public void unionBySize(int u, int v) {
+        int p1=findParent(u);
+        int p2=findParent(v);
+        if(p1 == p2) return;
+        if(size[p1]<=size[p2])
+        {
+            parent[p1]=p2;
+            size[p2]+=size[p1];
+        }
+        else{
+            parent[p2]=p1;
+            size[p1]+=size[p2];
+        }
+    }
+}
+
+
+class Solution {
+    public int makeConnected(int n, int[][] connections) {
+         int count=0;
         
+         int[] visited=new int[n];
+         DisjointSet dj=new DisjointSet(n);
+         if(connections.length<n-1) return -1;
         for(int i=0;i<connections.length;i++)
         {
             
             int u=connections[i][0];
             int v=connections[i][1];
-            list.get(u).add(v);
-            list.get(v).add(u);
+            if(!dj.find(u,v))
+            {
+                dj.unionBySize(u,v);
+            }
+            
+
         }
-        
-       
-        int visited[]=new int[n];
-        Queue<Integer> queue=new LinkedList<>();
+
         for(int i=0;i<n;i++)
         {
-            
-            if(visited[i]==0)
+            if(dj.findParent(i)==i)
             {
                 count++;
-                visited[i]=1;
-                queue.offer(i);
-                while(!queue.isEmpty())
-                {
-                    int t=queue.poll();
-                    for(int ch:list.get(t))
-                    {
-                     
-                        if(visited[ch]==0)
-                        {
-                            visited[ch]=1;
-                            queue.offer(ch);
-                        }
-                    }
-                }
             }
         }
+       
+       
+        
+       
 
 
+      return count-1;
     
-        return count-1;
-    
+ 
        
     }
 }
