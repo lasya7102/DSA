@@ -91,30 +91,43 @@ class Solution {
             }
         }
  
-       HashMap<Integer,List<String>> ans=new HashMap<>();
-       for(HashMap.Entry<String, Integer> entry : map.entrySet())
-       {
+    //    HashMap<Integer,List<String>> ans=new HashMap<>();
+    //    for(HashMap.Entry<String, Integer> entry : map.entrySet())
+    //    {
+    //     int x=dj.findParent(entry.getValue());
+    //     if(ans.containsKey(x))
+    //     {
+    //         ans.get(x).add(entry.getKey());
+    //     }
+    //     else
+    //     {
+    //         ans.put(x,new ArrayList<>());
+    //         ans.get(x).add(entry.getKey());
+    //     }
+    //    }
+    ArrayList<String>[] ans=new  ArrayList[accounts.size()];
+    for(int i=0;i<accounts.size();i++)
+    {
+        ans[i]=(new ArrayList<String>());
+    }
+    for(HashMap.Entry<String, Integer> entry : map.entrySet())
+    {
         int x=dj.findParent(entry.getValue());
-        if(ans.containsKey(x))
-        {
-            ans.get(x).add(entry.getKey());
-        }
-        else
-        {
-            ans.put(x,new ArrayList<>());
-            ans.get(x).add(entry.getKey());
-        }
-       }
+        ans[x].add(entry.getKey());
+    }
      List<List<String>> data=new ArrayList<>();
-       for(int ch:ans.keySet())
+    
+       for(int i=0;i<ans.length;i++)
        {
-         Collections.sort(ans.get(ch));
+        if(ans[i].size()==0) continue;
+         Collections.sort(ans[i]);
          List<String> str=new ArrayList<>();
-         str.add(accounts.get(ch).get(0));
-         for(String c:ans.get(ch))
+         str.add(accounts.get(i).get(0));
+         for(String c:ans[i])
          {
             str.add(c);
          }
+       
            data.add(str);
        }
      
