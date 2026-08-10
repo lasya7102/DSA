@@ -1,55 +1,41 @@
 class Solution {
+    class Pair implements Comparable<Pair> {
+        int elevation, row, col;
+
+        Pair(int elevation, int row, int col) {
+            this.elevation = elevation;
+            this.col = col;
+            this.row = row;
+        }
+
+        public int compareTo(Pair p) {
+            return this.elevation - p.elevation;
+        }
+    }
+
     public int swimInWater(int[][] grid) {
-
         int n = grid.length;
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        boolean visited[][] = new boolean[n][n];
 
-        boolean[][] vis = new boolean[n][n];
-
-        // {maximum elevation encountered, row, col}
-        PriorityQueue<int[]> pq =
-            new PriorityQueue<>((a, b) -> a[0] - b[0]);
-
-        pq.offer(new int[]{grid[0][0], 0, 0});
-
-        int[] dx = {0, 0, -1, 1};
-        int[] dy = {1, -1, 0, 0};
-
+        pq.offer(new Pair(grid[0][0], 0, 0));
+        visited[0][0] = true;
+        int deltaDir[][] = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
         while (!pq.isEmpty()) {
-
-            int[] cur = pq.poll();
-
-            int time = cur[0];
-            int row = cur[1];
-            int col = cur[2];
-
-            if (vis[row][col])
-                continue;
-
-            vis[row][col] = true;
-
-            // Reached destination
+            Pair p = pq.poll();
+            int elevation = p.elevation, row = p.row, col = p.col;
             if (row == n - 1 && col == n - 1)
-                return time;
+                return elevation;
+            for (int dir[] : deltaDir) {
+                int nr = row + dir[0];
+                int nc = col + dir[1];
 
-            for (int k = 0; k < 4; k++) {
-
-                int nr = row + dx[k];
-                int nc = col + dy[k];
-
-                if (nr >= 0 && nr < n &&
-                    nc >= 0 && nc < n &&
-                    !vis[nr][nc]) {
-
-                    int newTime =
-                        Math.max(time, grid[nr][nc]);
-
-                    pq.offer(new int[]{
-                        newTime, nr, nc
-                    });
+                if (nr >= 0 && nc >= 0 && nr < n && nc < n && visited[nr][nc] == false) {
+                    visited[nr][nc] = true;
+                    pq.offer(new Pair(Math.max(elevation, grid[nr][nc]), nr, nc));
                 }
             }
         }
-
         return -1;
     }
 }
